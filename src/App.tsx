@@ -1,38 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EmployeeCard from "./components/employeeCard";
 
 import "./App.css";
 
-const sampleEmployee = {
-	name: {
-		first: "Charlie",
-		last: "Thompson",
-	},
-	email: "charlie.thompson@example.com",
-	picture: {
-		medium: "https://randomuser.me/api/portraits/med/men/40.jpg",
-	},
-};
-
 function App() {
-	const getEmployee = () => {
-		fetch("https://randomuser.me/api?nat=en")
+	const [employee, setEmployee] = useState(null);
+
+	useEffect(() => {
+		fetch("http://localhost:3310/api/employees")
 			.then((response) => response.json())
 			.then((data) => {
-				console.log(data);
-				setEmployee(data.results[0]);
+				console.log("data", data);
+				setEmployee(data.message[0]);
 			});
-	};
-
-	const [employee, setEmployee] = useState(sampleEmployee);
+	}, []);
 
 	return (
 		<>
 			<main>
-				<EmployeeCard employee={employee} />
-				<button type="button" onClick={getEmployee}>
-					Get employee
-				</button>
+				{employee ? <EmployeeCard employee={employee} /> : <p>Loading...</p>}
 			</main>
 		</>
 	);
